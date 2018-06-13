@@ -132,7 +132,7 @@ contract depositWithdrawFundsProcedure is Procedure{
     {return amountDepositedByDepositorAddress[_userAddress];}    
     function getFundsDepositedToOrgan(address _organAddress) public view returns (uint)
     {return amountDepositedToReceiverAddress[_organAddress];} 
-    function getFundsWithdrawndByUser(address _userAddress) public view returns (uint)
+    function getFundsWithdrawnByUser(address _userAddress) public view returns (uint)
     {return amountWithdrawnFromReceiverAddress[_userAddress];}    
     function getFundsWithdrawnFromOrgan(address _organAddress) public view returns (uint)
     {return amountWithdrawnByDepositorAddress[_organAddress];} 

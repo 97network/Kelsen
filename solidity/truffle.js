@@ -3,7 +3,7 @@ module.exports = {
     development: {
       host: "127.0.0.1",
       port: 8545,
-      network_id: "*",
+      network_id: "1337",
       gasPrice: 11000000000
     },
     ganache: {
@@ -15,7 +15,6 @@ module.exports = {
     rinkeby: {
       host: "localhost",
       port: 8545,
-      from: "252536b7983e61e287d51459fef9ee034c82c7fb",
       network_id: 4
     }
   }
