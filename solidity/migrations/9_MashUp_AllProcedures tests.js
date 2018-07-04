@@ -120,11 +120,11 @@ module.exports = function(deployer, network, accounts) {
       console.log("Crediting masters")
       // SimpleAdminNomination
       // Vote on masters
-      presidentRegistryOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutional reform", {from: accounts[0]}).then(() => {
-      moderatorsOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutional reform", {from: accounts[0]}).then(() => {
-      memberRegistryOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutional reform", {from: accounts[0]}).then(() => {
-      adminOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutional reform", {from: accounts[0]}).then(() => {
-      adminOrgan.addMaster(simpleAdminNomination.address, true, true, "Admin nomination", {from: accounts[0]}).then(() => {
+      presidentRegistryOrgan.addMaster(constitutionnalReform.address, true, true, "Const ref", {from: accounts[0]}).then(() => {
+      moderatorsOrgan.addMaster(constitutionnalReform.address, true, true, "Const ref", {from: accounts[0]}).then(() => {
+      memberRegistryOrgan.addMaster(constitutionnalReform.address, true, true, "Const ref", {from: accounts[0]}).then(() => {
+      adminOrgan.addMaster(constitutionnalReform.address, true, true, "Const ref", {from: accounts[0]}).then(() => {
+      adminOrgan.addMaster(simpleAdminNomination.address, true, true, "Admin nom", {from: accounts[0]}).then(() => {
 
         console.log("-------------------------------------")
         console.log("Crediting admins")
@@ -139,11 +139,11 @@ module.exports = function(deployer, network, accounts) {
 
         presidentRegistryOrgan.addAdmin(presidentialElection.address, true, true, false, false, "PresElec", {from: accounts[0]}).then(() => {
         moderatorsOrgan.addAdmin(moderatorsElection.address, true, true, false, false, "ModElec", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, true, "Deposit", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(cooptationProcedure.address, true, false, true, true, "Cooptation", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(simpleNormNomination.address, true, true, false, false, "Norm Nomination", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(voteOnExpense.address, false, false, false, true, "Vote on Expense", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(memberManagement.address, true, true, false, false, "Voting on norms", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, true, "Dpst", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(cooptationProcedure.address, true, false, true, true, "Cpttn", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(simpleNormNomination.address, true, true, false, false, "Nrm Nmntn", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(voteOnExpense.address, false, false, false, true, "Vt n xpns", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(memberManagement.address, true, true, false, false, "Vt n nrms", {from: accounts[0]}).then(() => {
 
         // Temp admin, in order to add members
 

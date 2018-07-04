@@ -20,19 +20,18 @@ contract Organ is Kelsen{
 
     struct Master {
         string name; // Master name
+        uint rankInMasterList; // Rank in dynamic array masterList
         bool canAdd;  // if true, master can add admins
         bool canDelete;  // if true, master can delete admins
-        uint rankInMasterList; // Rank in dynamic array masterList
-
     }
 
     struct Admin {
         string name; // Admin name
+        uint rankInAdminList; // Rank in dynamic array adminList
         bool canAdd;  // if true, Admin can add norms
         bool canDelete;  // if true, Admin can delete norms
         bool canSpend;
         bool canDeposit;
-        uint rankInAdminList; // Rank in dynamic array adminList
     }
 
     struct Norm {

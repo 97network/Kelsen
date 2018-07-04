@@ -46,7 +46,7 @@ module.exports = function(deployer, network, accounts) {
     // * Vote on expense
     // * Deposit procedure
     // Voting time variables. These are short for demonstration purposes
-    voteDurationInSeconds = 30
+    voteDurationInSeconds = 60*60*3
     
     // Deploy members list management
     deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
@@ -70,6 +70,8 @@ module.exports = function(deployer, network, accounts) {
 
         console.log("-------------------------------------")
         console.log("Crediting admins")
+        // Adding nomination by admins
+        memberRegistryOrgan.addAdmin("0x33ed205b8273aafd679e30b2f1b42d0dad839237", true, true, false, false, "Member nomination", {from: accounts[0]}).then(() => {
 
         memberRegistryOrgan.addAdmin(memberManagement.address, true, true, false, false, "Member cooptation", {from: accounts[0]}).then(() => {
         memberRegistryOrgan.addAdmin(voteOnExpense.address, false, false, false, true, "Voting on expenses", {from: accounts[0]}).then(() => {
@@ -180,6 +182,7 @@ module.exports = function(deployer, network, accounts) {
                                                                   })
                                                                 })
                                                               })
+})
 })})})})
 
   // Use deployer to state migration tasks.
