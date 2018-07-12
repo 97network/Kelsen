@@ -428,6 +428,11 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
+    function updateLinkedOrgans(address _linkedOrgan) public {
+        // Organ supposedlyLinkedOrgan = Organ(_linkedOrgan);
+        // require(supposedlyLinkedOrgan.isAdmin(address(this)) || supposedlyLinkedOrgan.isMaster(address(this)) );
+        // linkedOrgans;
+    }
     // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     // {return linkedOrgans;}
     // function getProcedureName() public view returns (string _procedureName)

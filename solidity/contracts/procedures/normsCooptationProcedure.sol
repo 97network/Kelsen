@@ -346,8 +346,8 @@ contract normsCooptationProcedure is Procedure{
      }
 
         //////////////////////// Functions to communicate with other contracts
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _candidateAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
-        return (propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].name, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+    function getPropositionDetails(uint _propositionNumber) public view returns (address _candidateAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, uint _requiredQuorum){
+        return (propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].name, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size, propositions[_propositionNumber].requiredQuorum);
     }
     function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
         return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].startDate + votingPeriodDuration, propositions[_propositionNumber].startDate + votingPeriodDuration + promulgationPeriodDuration);
