@@ -114,7 +114,7 @@ module.exports = function(deployer, network, accounts) {
     const voteOnExpense = voteOnExpenseProcedure.at(deployVoteOnExpenseProcedure.address)
    
     // Deploy Vote on norms
-    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, moderatorsOrgan.address, adminOrgan.address , presidentRegistryOrgan.address, 10, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, adminOrgan.address , presidentRegistryOrgan.address, 10, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
     const memberManagement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
       console.log("-------------------------------------")
       console.log("Crediting masters")

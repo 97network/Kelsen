@@ -128,10 +128,8 @@ contract normsCooptationProcedure is Procedure{
             Proposition memory newProposition;
             
             // Calculating required quorum
-            newProposition.requiredQuorum = membersOrgan.getActiveNormNumber()*quorumSize/100;
-            if (newProposition.requiredQuorum == 0){
-                newProposition.requiredQuorum = 1;
-            }
+            newProposition.requiredQuorum = membersOrgan.getActiveNormNumber()*quorumSize;
+
             delete membersOrgan;
 
             
@@ -252,7 +250,7 @@ contract normsCooptationProcedure is Procedure{
         require(propositions[_propositionNumber].startDate + votingPeriodDuration < now);
 
         // Checking that the vote received enough votes to be closed
-        require((propositions[_propositionNumber].totalVoteCount >= propositions[_propositionNumber].requiredQuorum));
+        require((propositions[_propositionNumber].totalVoteCount*100 >= propositions[_propositionNumber].requiredQuorum));
 
         // Checking if members with vetoed blocked/forced the proposition
         Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
