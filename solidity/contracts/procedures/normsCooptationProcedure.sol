@@ -256,7 +256,7 @@ contract normsCooptationProcedure is Procedure{
         Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
 
 
-        delete membersWithVetoOrgan;
+        
         // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
         if (propositions[_propositionNumber].vetoCount >= membersWithVetoOrgan.getActiveNormNumber())
             {hasBeenAccepted=false;
@@ -269,7 +269,7 @@ contract normsCooptationProcedure is Procedure{
             {hasBeenAccepted=false;
             propositions[_propositionNumber].wasEnacted = true;
             propositions[_propositionNumber].payoutPerUser = propositions[_propositionNumber].deposit/(propositions[_propositionNumber].totalVoteCount-propositions[_propositionNumber].voteFor);}
-
+        delete membersWithVetoOrgan;
 
         // ############## Updating ballot values if vote concluded
         propositions[_propositionNumber].wasCounted = true;
@@ -364,8 +364,8 @@ contract normsCooptationProcedure is Procedure{
     {return propositionToPromulgator[_userAddress];}  
     function getPropositionsUsedByUser(address _userAddress) public view returns (uint[])
     {return propositionToVoter[_userAddress];}  
-    function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
-    {return propositions[propositionNumber].hasUserVoted[msg.sender];}
+    function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted, bool whatHasUserVoted)
+    {return (propositions[propositionNumber].hasUserVoted[msg.sender], propositions[propositionNumber].whatHasUserVoted[msg.sender]);}
     // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     // {return linkedOrgans;}
     // function getProcedureName() public view returns (string _procedureName)
