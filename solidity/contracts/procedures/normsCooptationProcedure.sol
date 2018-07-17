@@ -187,13 +187,17 @@ contract normsCooptationProcedure is Procedure{
 
         // Adding vote
         if(_acceptProposition == true)
-        {propositions[_propositionNumber].voteFor += 1;}
+            {
+            propositions[_propositionNumber].voteFor += 1;
+            // Log what the user voted
+            propositions[_propositionNumber].whatHasUserVoted[msg.sender] = true;
+            }
+        else {
+            propositions[_propositionNumber].whatHasUserVoted[msg.sender] = false;
+        }
 
         // Log that user voted
         propositions[_propositionNumber].hasUserVoted[msg.sender] = true;
-
-        // Log what the user voted
-        propositions[_propositionNumber].whatHasUserVoted[msg.sender] = _acceptProposition;
         
         // Adding vote count
         propositions[_propositionNumber].totalVoteCount += 1;
@@ -222,16 +226,20 @@ contract normsCooptationProcedure is Procedure{
         // Log decision
         if (_acceptProposition) {
             propositions[_propositionNumber].notVetoCount += 1;
+            propositions[_propositionNumber].voteFor += 1;
+            // Log what the user voted
+            propositions[_propositionNumber].whatHasUserVoted[msg.sender] = true;
         }
        else {
             propositions[_propositionNumber].vetoCount += 1;
+            propositions[_propositionNumber].whatHasUserVoted[msg.sender] = false;
        }
+       
+       // Adding vote count
+        propositions[_propositionNumber].totalVoteCount += 1;
 
        // Log that user voted
         propositions[_propositionNumber].hasUserVoted[msg.sender] = true;
-
-        // Log what the user voted
-        propositions[_propositionNumber].whatHasUserVoted[msg.sender] = _acceptProposition;
 
         // Log that user vetoed this proposition
         propositionToVetoer[msg.sender].push(_propositionNumber);
