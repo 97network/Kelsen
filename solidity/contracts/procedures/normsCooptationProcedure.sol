@@ -113,6 +113,7 @@ contract normsCooptationProcedure is Procedure{
     event countVotes(address _from, uint _propositionNumber);
     event promulgatePropositionEvent(address _from, uint _propositionNumber);
     event withdrawal(address _from, uint _propositionNumber, uint _value);
+    event changeMinimumDepositSize(address _from, uint _minimumDepositSizeInWei);
 
     /// Create a new ballot to choose one of `proposalNames`.
     function createProposition(string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public payable returns (uint propositionNumber){
@@ -234,7 +235,7 @@ contract normsCooptationProcedure is Procedure{
             propositions[_propositionNumber].vetoCount += 1;
             propositions[_propositionNumber].whatHasUserVoted[msg.sender] = false;
        }
-       
+
        // Adding vote count
         propositions[_propositionNumber].totalVoteCount += 1;
 
@@ -293,8 +294,7 @@ contract normsCooptationProcedure is Procedure{
         return hasBeenAccepted;
     }
 
-    function promulgateProposition(uint _propositionNumber) public
-    {
+    function promulgateProposition(uint _propositionNumber) public {
         // Checking if ballot was already enforced
         require(!propositions[_propositionNumber].wasEnacted );
 
@@ -326,10 +326,9 @@ contract normsCooptationProcedure is Procedure{
         propositionToPromulgator[msg.sender].push(_propositionNumber);
         // promulgation event
         promulgatePropositionEvent(msg.sender, _propositionNumber);
-
     }
 
-     function withDrawPayout(uint _propositionNumber) public {
+    function withDrawPayout(uint _propositionNumber) public {
         // Checking if ballot was already enforced
         require(propositions[_propositionNumber].wasEnacted );
 
@@ -351,7 +350,18 @@ contract normsCooptationProcedure is Procedure{
 
      }
 
-        //////////////////////// Functions to communicate with other contracts
+    function setMinimumDepositSize(uint _minimumDepositSizeInWei) public {
+        // Only vetoers can change the deposit size
+        Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
+        require(membersWithVetoOrgan.isNorm(msg.sender));
+        delete membersWithVetoOrgan;
+        minimumDepositSize = _minimumDepositSizeInWei;
+        changeMinimumDepositSize(msg.sender, _minimumDepositSizeInWei);
+
+
+    }
+
+    //////////////////////// Functions to communicate with other contracts
     function getPropositionDetails(uint _propositionNumber) public view returns (address _candidateAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, uint _requiredQuorum){
         return (propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].name, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size, propositions[_propositionNumber].requiredQuorum);
     }

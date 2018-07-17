@@ -73,11 +73,11 @@ module.exports = function(deployer, network, accounts) {
             console.log("-------------------------------------")
             console.log("Populate Bureau")
             console.log("-------------------------------------")
-            // bureauOrgan.addNorm(address, name, ipfsHash, hash_Function, size, {from: accounts[0]}).then(() => {
+            bureauOrgan.addNorm("0x051C3f5788d868221C8636b08e86d80d143BeC2D", "President", 0, 0, 0, {from: accounts[0]}).then(() => {
               console.log("-------------------------------------")
               console.log("Populate members list")
               console.log("-------------------------------------")
-              // membersOrgan.addNorm(address, name, ipfsHash, hash_Function, size, {from: accounts[0]}).then(() => {
+              membersOrgan.addNorm("0xc3a7897616Ae683089C737076e2751ADC9ecE481", "Premier membre", 0, 0, 0, {from: accounts[0]}).then(() => {
                 console.log("-------------------------------------")
                 console.log("Remove temp Admins")
                 console.log("-------------------------------------")
@@ -120,7 +120,8 @@ module.exports = function(deployer, network, accounts) {
           })
               })
             })
-
+          })
+            })
           
 
 }
