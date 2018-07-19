@@ -108,7 +108,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     event createPropositionDetails(address _contractToAdd, address _contractToRemove);
     event createMasterPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete, string _name);
     event createAdminPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name);
-    event createNormPropositionEvent(uint _propositionNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string name);
+    event createNormPropositionEvent(uint _propositionNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string name, uint _normNumber);
 
     event voteOnProposition(address _from, uint _propositionNumber);
     event vetoProposition(address _from, uint _propositionNumber);
@@ -163,7 +163,13 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             // proposition creation event
             createPropositionEvent(msg.sender, propositions[propositionNumber].targetOrgan, _propositionType, propositionNumber);
             createPropositionDetails(_contractToAdd, _contractToRemove);
-            if (_propositionType == 0)
+            
+            if (!_canAdd && !_canDelete && !_canDeposit && !_canSpend)
+            {
+                // Norm proposition event
+            createNormPropositionEvent(propositionNumber, _ipfsHash, _hash_function, _size, _name, _propositionType);
+            }
+            else if (_propositionType == 0)
             {
                 // Master proposition event
             createMasterPropositionEvent(propositionNumber, _canAdd, _canDelete, _name);
@@ -172,11 +178,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             {
                 // Admin proposition event
             createAdminPropositionEvent(propositionNumber, _canAdd, _canDelete, _canDeposit, _canSpend, _name);
-            }
-            else if (_propositionType == 2)
-            {
-                // Norm proposition event
-            createNormPropositionEvent(propositionNumber, _ipfsHash, _hash_function, _size, _name);
             }
 
     }
@@ -292,10 +293,11 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         // Checking the ballot was accepted
         require(propositions[_propositionNumber].wasAccepted);
 
-        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemove == 0x0000)) )
+        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemove == 0x0000) && (propositions[_propositionNumber].ipfsHash == 0) && (propositions[_propositionNumber].propositionType == 0)) )
         {
             // The promulgator choses to invalidate the promulgation
             propositions[_propositionNumber].wasEnded = true;
+            propositions[_propositionNumber].wasAccepted = false;
         }
         else
         {
@@ -326,7 +328,24 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                 else
                 {
                     // Adding
-                        if (propositions[_propositionNumber].propositionType == 0)
+                        // Checking if it is a norm
+                        if (!propositions[_propositionNumber].canAdd && !propositions[_propositionNumber].canDelete && !propositions[_propositionNumber].canDeposit && !propositions[_propositionNumber].canSpend)
+                        {
+                            // Checking if this is an addition or a replacement
+                            if (propositions[_propositionNumber].propositionType != 0)
+                            {
+                                // Replacing
+                                affectedOrgan.replaceNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove) , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+                        
+                            }
+                            else
+                            {
+                                //Adding a has reference
+                            affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
+
+                            }
+                        }
+                        else if (propositions[_propositionNumber].propositionType == 0)
                         {
                         affectedOrgan.addMaster(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].name);
                         }
@@ -335,17 +354,38 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                         // Adding an Admin
                         affectedOrgan.addAdmin(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend, propositions[_propositionNumber].name);
                         }
-                        else if (propositions[_propositionNumber].propositionType == 2)
-                        {
-                        affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
 
-                        }
                 }
+            }
+            else if (propositions[_propositionNumber].contractToRemove == 0x0000 && propositions[_propositionNumber].ipfsHash != 0) 
+            {
+                // this is the situation where there is no contract to add, no contract to remove, BUT there is a hash reference.
+                // This means it is either an addition, or a replacement.
+                // Checking if this is an addition or a replacement
+                if (propositions[_propositionNumber].propositionType != 0)
+                {
+                    // Replacing
+                    affectedOrgan.replaceNorm(propositions[_propositionNumber].propositionType , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+            
+                }
+                else
+                {
+                    //Adding a has reference
+                affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
+
+                }
+
             }
             else 
             {
                 // Removing
-                if (propositions[_propositionNumber].propositionType == 0)
+                if (propositions[_propositionNumber].contractToRemove == 0x0000)
+                {
+                // Removing a norm
+                affectedOrgan.remNorm(propositions[_propositionNumber].propositionType);
+                }
+
+                else if (propositions[_propositionNumber].propositionType == 0)
                 {
                 affectedOrgan.remMaster(propositions[_propositionNumber].contractToRemove);
                 }
@@ -354,11 +394,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                 // Removing an Admin
                 affectedOrgan.remAdmin(propositions[_propositionNumber].contractToRemove);
                 }
-                else if (propositions[_propositionNumber].propositionType == 2)
-                {
-                // Removing a norm
-                affectedOrgan.remNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove));
-                }
+                
                 
             }        
             

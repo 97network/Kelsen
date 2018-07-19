@@ -138,6 +138,7 @@ module.exports = function(deployer, network, accounts) {
         // Vote on member addition
 
         presidentRegistryOrgan.addAdmin(presidentialElection.address, true, true, false, false, "PresElec", {from: accounts[0]}).then(() => {
+        presidentRegistryOrgan.addAdmin(constitutionnalReform.address, true, true, false, false, "ConsElec", {from: accounts[0]}).then(() => {
         moderatorsOrgan.addAdmin(moderatorsElection.address, true, true, false, false, "ModElec", {from: accounts[0]}).then(() => {
         memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, true, "Dpst", {from: accounts[0]}).then(() => {
         memberRegistryOrgan.addAdmin(cooptationProcedure.address, true, false, true, true, "Cpttn", {from: accounts[0]}).then(() => {
@@ -232,6 +233,8 @@ module.exports = function(deployer, network, accounts) {
                                                                           })
                                                           })
                                                                             })
+ })
+
                                                                           
 
 
