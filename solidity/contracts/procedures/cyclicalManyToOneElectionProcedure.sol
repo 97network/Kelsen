@@ -333,7 +333,6 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         if (now > ballots[_ballotNumber].startDate + ballotFrequency)
         {
             ballots[_ballotNumber].wasEnforced = true;
-            // TODO add event to log this  
             ballotResultException(_ballotNumber, false);                  
             return;
         }

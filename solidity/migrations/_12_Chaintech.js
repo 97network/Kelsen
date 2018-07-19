@@ -55,18 +55,18 @@ module.exports = function(deployer, network, accounts) {
     deployer.deploy(deployVoteOnAdminsAndMastersProcedure, membersOrgan.address, bureauOrgan.address, 0x0000, 60, twoWeeks, 0, 65, "Changement des statuts", {from: accounts[0]}).then(() => {
     const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
       console.log("-------------------------------------")
-      console.log("Set Admins")
+      console.log("Setting Admins")
       console.log("-------------------------------------")
       membersOrgan.addAdmin(cooptation.address, true, false, true, true, "Cooptation procedure", {from: accounts[0]}).then(() => {
       membersOrgan.addAdmin(memberExclusion.address, false, true, false, false , "Member exclusion",  {from: accounts[0]}).then(() => {
       bureauOrgan.addAdmin(bureauReplacement.address, true, true, false, false, "Bureau replacement", {from: accounts[0]}).then(() => {
         console.log("-------------------------------------")
-        console.log("Set Masters")
+        console.log("Setting Masters")
         console.log("-------------------------------------")
         bureauOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutionnal Reform", {from: accounts[0]}).then(() => {
         membersOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutionnal Reform", {from: accounts[0]}).then(() => {
           console.log("-------------------------------------")
-          console.log("Set temp Admin")
+          console.log("Setting temporary Admin")
           console.log("-------------------------------------")
           membersOrgan.addAdmin(accounts[0], true, true, false, false , "Temp admin",  {from: accounts[0]}).then(() => {
           bureauOrgan.addAdmin(accounts[0], true, true, false, false, "Temp admin", {from: accounts[0]}).then(() => {
@@ -79,7 +79,7 @@ module.exports = function(deployer, network, accounts) {
               console.log("-------------------------------------")
               membersOrgan.addNorm("0xc3a7897616Ae683089C737076e2751ADC9ecE481", "Premier membre", 0, 0, 0, {from: accounts[0]}).then(() => {
                 console.log("-------------------------------------")
-                console.log("Remove temp Admins")
+                console.log("Remove temporary Admins")
                 console.log("-------------------------------------")
                 membersOrgan.remAdmin(accounts[0],  {from: accounts[0]}).then(() => {
                 bureauOrgan.remAdmin(accounts[0], {from: accounts[0]}).then(() => {

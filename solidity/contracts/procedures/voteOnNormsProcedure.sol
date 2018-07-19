@@ -57,7 +57,7 @@ contract voteOnNormsProcedure is Procedure{
 
         // Proposition details
         address contractToAdd;
-        address contractToRemove;
+        uint contractToRemoveId;
         bytes32 ipfsHash; // ID of proposal on IPFS
         uint8 hash_function;
         uint8 size;
@@ -101,14 +101,14 @@ contract voteOnNormsProcedure is Procedure{
     
 
     // Events
-    event createPropositionEvent(address _from, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
+    event createPropositionEvent(address _from, address _contractToAdd, uint _contractToRemoveId, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
     event voteOnProposition(address _from, uint _propositionNumber);
     event vetoProposition(address _from, uint _propositionNumber);
     event countVotes(address _from, uint _propositionNumber);
     event promulgatePropositionEvent(address _from, uint _propositionNumber, bool _promulgate);
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name) public returns (uint propositionNumber){
+    function createProposition(address _contractToAdd, uint _contractToRemoveId, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name) public returns (uint propositionNumber){
 
             // Check the proposition creator is able to make a proposition
             Organ voterRegistryOrgan = Organ(votersOrganContract);
@@ -118,7 +118,7 @@ contract voteOnNormsProcedure is Procedure{
             // Retrieving proposition details
             Proposition memory newProposition;
             newProposition.contractToAdd = _contractToAdd;
-            newProposition.contractToRemove = _contractToRemove;
+            newProposition.contractToRemoveId = _contractToRemoveId;
             newProposition.ipfsHash = _ipfsHash;
             newProposition.hash_function = _hash_function;
             newProposition.size = _size;
@@ -147,7 +147,7 @@ contract voteOnNormsProcedure is Procedure{
             propositionsWaitingPromulgation.push(false);
 
             // proposition creation event
-            createPropositionEvent(msg.sender, _contractToAdd, _contractToRemove, _ipfsHash, _hash_function, _size);
+            createPropositionEvent(msg.sender, _contractToAdd, _contractToRemoveId, _ipfsHash, _hash_function, _size);
 
     }
 
@@ -262,7 +262,7 @@ contract voteOnNormsProcedure is Procedure{
         // Checking the ballot was accepted
         require(propositions[_propositionNumber].wasAccepted);
 
-        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemove == 0x0000)) )
+        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemoveId == 2**256 - 1)) )
         {
             // The promulgator choses to invalidate the promulgation
             propositions[_propositionNumber].wasEnded = true;
@@ -275,10 +275,10 @@ contract voteOnNormsProcedure is Procedure{
 
             if(propositions[_propositionNumber].contractToAdd != 0x0000)
             {
-                if (propositions[_propositionNumber].contractToRemove != 0x0000)
+                if (propositions[_propositionNumber].contractToRemoveId != 2**256 - 1)
                     { 
                         // Replacing a norm
-                        affectedOrgan.replaceNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove) , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+                        affectedOrgan.replaceNorm(propositions[_propositionNumber].contractToRemoveId , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
                     }
                 else
                 {
@@ -289,7 +289,7 @@ contract voteOnNormsProcedure is Procedure{
             else 
             {
                 // Removing a contract
-                affectedOrgan.remNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove));
+                affectedOrgan.remNorm(propositions[_propositionNumber].contractToRemoveId);
             }        
             
         }
@@ -304,8 +304,8 @@ contract voteOnNormsProcedure is Procedure{
     }
 
         //////////////////////// Functions to communicate with other contracts
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, address _addressToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
-        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, uint _addressToRemoveId, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
+        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemoveId, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
     }
     function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
         return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].votingPeriodEndDate, propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration);
