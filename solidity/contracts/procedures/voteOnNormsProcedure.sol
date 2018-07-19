@@ -266,6 +266,7 @@ contract voteOnNormsProcedure is Procedure{
         {
             // The promulgator choses to invalidate the promulgation
             propositions[_propositionNumber].wasEnded = true;
+            propositions[_propositionNumber].wasAccepted = false;
         }
         else
         {
@@ -273,7 +274,7 @@ contract voteOnNormsProcedure is Procedure{
 
         Organ affectedOrgan = Organ(affectedOrganContract);
 
-            if(propositions[_propositionNumber].contractToAdd != 0x0000)
+            if(propositions[_propositionNumber].contractToAdd != 0x0000 || propositions[_propositionNumber].ipfsHash != 0)
             {
                 if (propositions[_propositionNumber].contractToRemoveId != 0)
                     { 
@@ -304,8 +305,8 @@ contract voteOnNormsProcedure is Procedure{
     }
 
         //////////////////////// Functions to communicate with other contracts
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, uint _addressToRemoveId, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
-        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemoveId, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, uint _addressToRemoveId, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name){
+        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemoveId, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size, propositions[_propositionNumber].name);
     }
     function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
         return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].votingPeriodEndDate, propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration);
