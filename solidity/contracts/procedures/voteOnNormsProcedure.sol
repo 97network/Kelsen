@@ -262,7 +262,7 @@ contract voteOnNormsProcedure is Procedure{
         // Checking the ballot was accepted
         require(propositions[_propositionNumber].wasAccepted);
 
-        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemoveId == 0)) )
+        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemoveId == 0) && (propositions[_propositionNumber].ipfsHash == 0)) )
         {
             // The promulgator choses to invalidate the promulgation
             propositions[_propositionNumber].wasEnded = true;
