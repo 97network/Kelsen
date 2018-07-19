@@ -262,7 +262,7 @@ contract voteOnNormsProcedure is Procedure{
         // Checking the ballot was accepted
         require(propositions[_propositionNumber].wasAccepted);
 
-        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemoveId == 2**256 - 1)) )
+        if ((!_promulgate)||((propositions[_propositionNumber].contractToAdd == 0x0000) && (propositions[_propositionNumber].contractToRemoveId == 0)) )
         {
             // The promulgator choses to invalidate the promulgation
             propositions[_propositionNumber].wasEnded = true;
@@ -275,7 +275,7 @@ contract voteOnNormsProcedure is Procedure{
 
             if(propositions[_propositionNumber].contractToAdd != 0x0000)
             {
-                if (propositions[_propositionNumber].contractToRemoveId != 2**256 - 1)
+                if (propositions[_propositionNumber].contractToRemoveId != 0)
                     { 
                         // Replacing a norm
                         affectedOrgan.replaceNorm(propositions[_propositionNumber].contractToRemoveId , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);

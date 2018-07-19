@@ -190,10 +190,11 @@ module.exports = function(deployer, network, accounts) {
                       console.log("  ]")
                       console.log("Accounts 0 has been added as members")
                       console.log("-------------------------------------")
+                      memberManagement.createProposition(accounts[0], 0, 0,0,0, "Test", {from: accounts[1]}).then(() => {
 
 
 
-
+                                                          })
                                                                                       })
                                                                                     })
                                                                                   })
