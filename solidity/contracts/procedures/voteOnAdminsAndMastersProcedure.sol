@@ -304,9 +304,10 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             // We initiate the Organ interface to add an Admin
 
             Organ affectedOrgan = Organ(propositions[_propositionNumber].targetOrgan);
-
-            if(propositions[_propositionNumber].contractToAdd != 0x0000)
+            // First, we check if there is a CONTRACT ADDRESS to add
+            if (propositions[_propositionNumber].contractToAdd != 0x0000)
             {
+                // There is a contract to add. We check if there is a CONTRACT ADDRESS to remove
                 if (propositions[_propositionNumber].contractToRemove != 0x0000)
                     { 
                         // Replacing
@@ -325,27 +326,18 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                         }
 
                     }
+                // We check if there is an ENTRY NUMBER to remove. If there is an entry to remove, it is propositionType - 2. Entry 0 can not be removed.    
+                else if (propositions[_propositionNumber].propositionType > 2 )
+                {
+                    // This means we replace a hash reference with a contract address. Cool.
+                    affectedOrgan.replaceNorm((propositions[_propositionNumber].propositionType-2), propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+
+                }
+                // Ok so there is NO contract to remove, and no hash reference to replace. We're just adding a new entry.
                 else
                 {
                     // Adding
-                        // Checking if it is a norm
-                        if (!propositions[_propositionNumber].canAdd && !propositions[_propositionNumber].canDelete && !propositions[_propositionNumber].canDeposit && !propositions[_propositionNumber].canSpend)
-                        {
-                            // Checking if this is an addition or a replacement
-                            if (propositions[_propositionNumber].propositionType != 0)
-                            {
-                                // Replacing
-                                affectedOrgan.replaceNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove) , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
-                        
-                            }
-                            else
-                            {
-                                //Adding a has reference
-                            affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
-
-                            }
-                        }
-                        else if (propositions[_propositionNumber].propositionType == 0)
+                        if (propositions[_propositionNumber].propositionType == 0)
                         {
                         affectedOrgan.addMaster(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].name);
                         }
@@ -354,38 +346,18 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                         // Adding an Admin
                         affectedOrgan.addAdmin(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend, propositions[_propositionNumber].name);
                         }
+                        else if (propositions[_propositionNumber].propositionType == 2)
+                        {//Adding a has reference
+                        affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
+                        }
 
                 }
             }
-            else if (propositions[_propositionNumber].contractToRemove == 0x0000 && propositions[_propositionNumber].ipfsHash != 0) 
+            // Then, we check if there is a CONTRACT ADDRESS to remove
+            else if (propositions[_propositionNumber].contractToRemove != 0x0000)
             {
-                // this is the situation where there is no contract to add, no contract to remove, BUT there is a hash reference.
-                // This means it is either an addition, or a replacement.
-                // Checking if this is an addition or a replacement
-                if (propositions[_propositionNumber].propositionType != 0)
-                {
-                    // Replacing
-                    affectedOrgan.replaceNorm(propositions[_propositionNumber].propositionType , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
-            
-                }
-                else
-                {
-                    //Adding a has reference
-                affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
-
-                }
-
-            }
-            else 
-            {
-                // Removing
-                if (propositions[_propositionNumber].contractToRemove == 0x0000)
-                {
-                // Removing a norm
-                affectedOrgan.remNorm(propositions[_propositionNumber].propositionType);
-                }
-
-                else if (propositions[_propositionNumber].propositionType == 0)
+                // Ok so there is ONLY a contract address to remove. Good to know.
+                if (propositions[_propositionNumber].propositionType == 0)
                 {
                 affectedOrgan.remMaster(propositions[_propositionNumber].contractToRemove);
                 }
@@ -394,8 +366,37 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                 // Removing an Admin
                 affectedOrgan.remAdmin(propositions[_propositionNumber].contractToRemove);
                 }
-                
-                
+                else if (propositions[_propositionNumber].propositionType == 2)
+                {
+                // Removing a norm
+                affectedOrgan.remNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove));
+                }
+            }
+            // Ok, so finally this means there is NO contract address to add and NO contract address to remove. We are dealing with a hash reference. So implicitly, with a norm.
+            else if (propositions[_propositionNumber].ipfsHash != 0) 
+            {
+                // this is the situation where there is no contract to add, no contract to remove, BUT there is a hash reference.
+                // This means it is either an addition, or a replacement.
+                // Addition will have propositionType set to 0. Replacement will store the norm number to replace in propositionType.
+                if (propositions[_propositionNumber].propositionType != 0)
+                {
+                    // Replacing
+                    affectedOrgan.replaceNorm(propositions[_propositionNumber].propositionType , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+            
+                }
+                else
+                {
+                    //Adding a hash reference
+                affectedOrgan.addNorm(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
+
+                }
+
+            }
+            // Ok so if there no contract address to add / remove, no IPFS content... Then it means we are removing a norm. The norm number shall be stored in propositionType.
+            else 
+            {
+                // Removing a norm
+                affectedOrgan.remNorm(propositions[_propositionNumber].propositionType);   
             }        
             
         }
