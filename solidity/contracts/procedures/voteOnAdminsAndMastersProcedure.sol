@@ -464,41 +464,41 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
-    function updateLinkedOrgans(address _linkedOrgan) public {
-        bool isLinked = checkLinkedOrgan(_linkedOrgan);
-        bool isRegistered = false;
-        for (uint p = 0; p < linkedOrgans.length; p++) {
-            if (linkedOrgans[p] == _linkedOrgan)
-            {
-                if (!isLinked)
-                {
-                    delete(linkedOrgans[p]);       
-                }
-                isRegistered = true;
-            }
+    // function updateLinkedOrgans(address _linkedOrgan) public {
+    //     bool isLinked = checkLinkedOrgan(_linkedOrgan);
+    //     bool isRegistered = false;
+    //     for (uint p = 0; p < linkedOrgans.length; p++) {
+    //         if (linkedOrgans[p] == _linkedOrgan)
+    //         {
+    //             if (!isLinked)
+    //             {
+    //                 delete(linkedOrgans[p]);       
+    //             }
+    //             isRegistered = true;
+    //         }
 
-        }
-        if (isLinked && !isRegistered)
-        {
-        linkedOrgans.push(_linkedOrgan);
-        }
-    }
-    function checkLinkedOrgan(address _linkedOrgan) public view returns (bool){
-        Organ supposedlyLinkedOrgan = Organ(_linkedOrgan);
-        bool adminCanAdd;
-        bool adminCanDelete;
-        bool masterCanAdd;
-        bool masterCanDelete;
-        bool canDeposit;
-        bool canSpend;
-        (adminCanAdd, adminCanDelete) = supposedlyLinkedOrgan.isAdmin(address(this));
-        (masterCanAdd, masterCanDelete) = supposedlyLinkedOrgan.isMaster(address(this));
-        (canDeposit, canSpend) = supposedlyLinkedOrgan.isMoneyManager(address(this));
-        if( adminCanAdd || adminCanDelete || masterCanAdd || masterCanDelete || canDeposit || canSpend)
-            {return true;}
-        else
-            {return false;}
-    }
+    //     }
+    //     if (isLinked && !isRegistered)
+    //     {
+    //     linkedOrgans.push(_linkedOrgan);
+    //     }
+    // }
+    // function checkLinkedOrgan(address _linkedOrgan) public view returns (bool){
+    //     Organ supposedlyLinkedOrgan = Organ(_linkedOrgan);
+    //     bool adminCanAdd;
+    //     bool adminCanDelete;
+    //     bool masterCanAdd;
+    //     bool masterCanDelete;
+    //     bool canDeposit;
+    //     bool canSpend;
+    //     (adminCanAdd, adminCanDelete) = supposedlyLinkedOrgan.isAdmin(address(this));
+    //     (masterCanAdd, masterCanDelete) = supposedlyLinkedOrgan.isMaster(address(this));
+    //     (canDeposit, canSpend) = supposedlyLinkedOrgan.isMoneyManager(address(this));
+    //     if( adminCanAdd || adminCanDelete || masterCanAdd || masterCanDelete || canDeposit || canSpend)
+    //         {return true;}
+    //     else
+    //         {return false;}
+    // }
     // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     // {return linkedOrgans;}
     // function getProcedureName() public view returns (string _procedureName)
