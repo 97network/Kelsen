@@ -19,17 +19,17 @@ contract authCostTest {
 
         }
 
-    function noAuth() public returns (uint) {
+    function noAuth() public pure returns (uint) {
         return 4;
 
         }
-    function authWithOwner() public returns (uint) {
+    function  authWithOwner() public view returns (uint) {
         require(msg.sender == owner);
         return 4;
 
         }
 
-    function authWithOrgan() public returns (uint) {
+    function  authWithOrgan() public view returns (uint) {
         Organ referenceOrganInstance = Organ(referenceOrgan);
         require(referenceOrganInstance.isNorm(msg.sender));
         delete referenceOrganInstance;
