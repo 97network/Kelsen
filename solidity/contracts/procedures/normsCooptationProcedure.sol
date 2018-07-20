@@ -33,7 +33,7 @@ contract normsCooptationProcedure is Procedure{
 
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
-    uint minimumDepositSize;
+    uint public minimumDepositSize;
 
     // ####### Voting process
     // Time for participant to vote
