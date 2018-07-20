@@ -79,7 +79,7 @@ module.exports = function(deployer, network, accounts) {
     // Vote on member addition
 
     // Voting time variables. These are short for demonstration purposes
-    voteDurationInSeconds = 180
+    voteDurationInSeconds = 60*1
 
     // Deploy presidential election procedure
     deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address , "Presidential election", {from: accounts[0]}).then(() => {
@@ -106,7 +106,7 @@ module.exports = function(deployer, network, accounts) {
     const simpleNormNomination = simpleNormNominationProcedure.at(deploySimpleNormNominationProcedure.address)
 
     // Deploy constitutionnal reform procedure
-    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, adminOrgan.address, presidentRegistryOrgan.address, 10, voteDurationInSeconds, voteDurationInSeconds, 66, "Constitutional reform", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, adminOrgan.address, presidentRegistryOrgan.address, 10, voteDurationInSeconds, 0, 66, "Constitutional reform", {from: accounts[0]}).then(() => {
     const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
 
     // Deploy Vote on expense
@@ -138,7 +138,7 @@ module.exports = function(deployer, network, accounts) {
         // Vote on member addition
 
         presidentRegistryOrgan.addAdmin(presidentialElection.address, true, true, false, false, "PresElec", {from: accounts[0]}).then(() => {
-        presidentRegistryOrgan.addAdmin(constitutionnalReform.address, true, true, false, false, "ConsElec", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(constitutionnalReform.address, true, true, false, false, "ConsElec", {from: accounts[0]}).then(() => {
         moderatorsOrgan.addAdmin(moderatorsElection.address, true, true, false, false, "ModElec", {from: accounts[0]}).then(() => {
         memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, true, "Dpst", {from: accounts[0]}).then(() => {
         memberRegistryOrgan.addAdmin(cooptationProcedure.address, true, false, true, true, "Cpttn", {from: accounts[0]}).then(() => {
@@ -154,6 +154,7 @@ module.exports = function(deployer, network, accounts) {
           console.log("-------------------------------------")
           console.log("Crediting norms")
           memberRegistryOrgan.addNorm(accounts[1], "Member 1", 1, 1, 1, {from: accounts[0]}).then(() => {
+          memberRegistryOrgan.addNorm(0x0000, "TestRefHash", 1, 1, 1, {from: accounts[0]}).then(() => {
           adminOrgan.addNorm(accounts[0], "Member 0", 1, 1, 1, {from: accounts[0]}).then(() => {
 
             console.log("-------------------------------------")
@@ -233,6 +234,7 @@ module.exports = function(deployer, network, accounts) {
                                                                           })
                                                           })
                                                                             })
+})
  })
 
                                                                           
