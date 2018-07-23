@@ -164,6 +164,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             createPropositionEvent(msg.sender, propositions[propositionNumber].targetOrgan, _propositionType, propositionNumber);
             createPropositionDetails(_contractToAdd, _contractToRemove);
             
+            // TODO
             if (!_canAdd && !_canDelete && !_canDeposit && !_canSpend)
             {
                 // Norm proposition event
@@ -320,7 +321,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                         // Replacing an Admin
                         affectedOrgan.replaceAdmin(propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend, propositions[_propositionNumber].name);
                         }
-                        else if (propositions[_propositionNumber].propositionType == 2)
+                        else
                         {
                         affectedOrgan.replaceNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove) , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
                         }
@@ -356,20 +357,31 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             // Then, we check if there is a CONTRACT ADDRESS to remove
             else if (propositions[_propositionNumber].contractToRemove != 0x0000)
             {
-                // Ok so there is ONLY a contract address to remove. Good to know.
+                // Ok so there is ONLY a contract address to remove. Good to know. There might be a hash reference too, so we'll check it out.
+                // Is it a master?
                 if (propositions[_propositionNumber].propositionType == 0)
                 {
                 affectedOrgan.remMaster(propositions[_propositionNumber].contractToRemove);
                 }
+                // Is it an admin?
                 else if (propositions[_propositionNumber].propositionType == 1)
                 {
                 // Removing an Admin
                 affectedOrgan.remAdmin(propositions[_propositionNumber].contractToRemove);
                 }
-                else if (propositions[_propositionNumber].propositionType == 2)
+                // Ok, so it's a norm
+                else
                 {
-                // Removing a norm
-                affectedOrgan.remNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove));
+                // Removing/replacing a norm
+                if (propositions[_propositionNumber].ipfsHash != 0)
+                    {
+                    affectedOrgan.replaceNorm(propositions[_propositionNumber].propositionType , propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
+                    }
+                else 
+                    {
+                    affectedOrgan.remNorm(affectedOrgan.getAddressPositionInNorm(propositions[_propositionNumber].contractToRemove));
+                    }
+                
                 }
             }
             // Ok, so finally this means there is NO contract address to add and NO contract address to remove. We are dealing with a hash reference. So implicitly, with a norm.
@@ -410,27 +422,27 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
 
     }
 
-    function archiveDefunctProposition(uint _propositionNumber) public {
-        // If a proposition contains an instruction that can not be executed (eg "add an admin" without having canAdd enabled), this proposition can be closed
+    // function archiveDefunctProposition(uint _propositionNumber) public {
+    //     // If a proposition contains an instruction that can not be executed (eg "add an admin" without having canAdd enabled), this proposition can be closed
 
-        Organ targetOrganContract = Organ(propositions[_propositionNumber].targetOrgan);
-        bool canAdd;
-        bool canDelete;
-        if (propositions[_propositionNumber].propositionType < 2){
-            (canAdd, canDelete) = targetOrganContract.isMaster(address(this));
-        }
-        else {
-            (canAdd, canDelete) = targetOrganContract.isAdmin(address(this));
-        }
+    //     Organ targetOrganContract = Organ(propositions[_propositionNumber].targetOrgan);
+    //     bool canAdd;
+    //     bool canDelete;
+    //     if (propositions[_propositionNumber].propositionType < 2){
+    //         (canAdd, canDelete) = targetOrganContract.isMaster(address(this));
+    //     }
+    //     else {
+    //         (canAdd, canDelete) = targetOrganContract.isAdmin(address(this));
+    //     }
         
-        if ((!canAdd && (propositions[_propositionNumber].contractToAdd != 0x0000)) || (!canDelete && (propositions[_propositionNumber].contractToRemove != 0x0000)) )
-        {
-            propositions[_propositionNumber].wasEnded = true;
-            propositionsWaitingPromulgation[_propositionNumber] = false;
-        }
-        promulgatePropositionEvent(msg.sender, _propositionNumber, false);
+    //     if ((!canAdd && (propositions[_propositionNumber].contractToAdd != 0x0000)) || (!canDelete && (propositions[_propositionNumber].contractToRemove != 0x0000)) )
+    //     {
+    //         propositions[_propositionNumber].wasEnded = true;
+    //         propositionsWaitingPromulgation[_propositionNumber] = false;
+    //     }
+    //     promulgatePropositionEvent(msg.sender, _propositionNumber, false);
 
-    }
+    // }
 
 
     //////////////////////// Functions to communicate with other contracts
