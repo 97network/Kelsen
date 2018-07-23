@@ -69,7 +69,7 @@ module.exports = function(deployer, network, accounts) {
         adminOrgan.addAdmin(accounts[0], true, true, false, false, "Temp admin", {from: accounts[0]}).then(() => {
           console.log("-------------------------------------")
           console.log("Crediting norms")
-          adminOrgan.addNorm("0x208d0126D47B87aC070d3631655503526369F08f", "Henri", 1, 1, 1, {from: accounts[0]}).then(() => {
+          adminOrgan.addNorm("0x051C3f5788d868221C8636b08e86d80d143BeC2D", "97", 1, 1, 1, {from: accounts[0]}).then(() => {
 
             console.log("-------------------------------------")
             console.log("Removing temp admins")

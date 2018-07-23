@@ -37,22 +37,23 @@ module.exports = function(deployer, network, accounts) {
     console.log("Deploying Procedures")
     console.log("-------------------------------------")
     const threeMinutes = 60*3
-    const twoDays = 60*60*24*2
-    const twoWeeks = 60*60*24*7*2
+    const threeHours = 60*60*3
+    // const twoDays = 60*60*24*2
+    // const twoWeeks = 60*60*24*7*2
     // Cooptation procedure (adding members)
     deployer.deploy(deployNormsCooptationProcedure, membersOrgan.address, bureauOrgan.address, bureauOrgan.address, 40, threeMinutes, threeMinutes, "Cooptation des membres", {from: accounts[0]}).then(() => {
     const cooptation = normsCooptationProcedure.at(deployNormsCooptationProcedure.address)
 
     // Vote On norms (excluding members)
-    deployer.deploy(deployVoteOnNormsProcedure, membersOrgan.address, bureauOrgan.address, 0x0000, 0x0000, 100, twoDays, 0, 100, "Exclusion de membres", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, membersOrgan.address, bureauOrgan.address, 0x0000, 0x0000, 100, threeHours, 0, 100, "Exclusion de membres", {from: accounts[0]}).then(() => {
     const memberExclusion = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
 
     // Vote on norms (replacing bureau)
-    deployer.deploy(deployVoteOnNormsProcedure, bureauOrgan.address, bureauOrgan.address, 0x0000, 0x0000, 65, twoDays, 0, 65, "Renouvellement du bureau", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, bureauOrgan.address, bureauOrgan.address, 0x0000, 0x0000, 65, threeHours, 0, 65, "Renouvellement du bureau", {from: accounts[0]}).then(() => {
     const bureauReplacement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
 
     // Vote on admins (modify DAO architecture)
-    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, membersOrgan.address, bureauOrgan.address, 0x0000, 60, twoWeeks, 0, 65, "Changement des statuts", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, membersOrgan.address, bureauOrgan.address, 0x0000, 60, threeHours, 0, 65, "Changement des statuts", {from: accounts[0]}).then(() => {
     const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
       console.log("-------------------------------------")
       console.log("Setting Admins")
@@ -73,11 +74,11 @@ module.exports = function(deployer, network, accounts) {
             console.log("-------------------------------------")
             console.log("Populate Bureau")
             console.log("-------------------------------------")
-            bureauOrgan.addNorm("0x051C3f5788d868221C8636b08e86d80d143BeC2D", "President", 0, 0, 0, {from: accounts[0]}).then(() => {
+            bureauOrgan.addNorm("0x81C4f7a2125076D50Cb7E0558BC1cBfDbD59E345", "President", 0, 0, 0, {from: accounts[0]}).then(() => {
               console.log("-------------------------------------")
               console.log("Populate members list")
               console.log("-------------------------------------")
-              membersOrgan.addNorm("0xc3a7897616Ae683089C737076e2751ADC9ecE481", "Premier membre", 0, 0, 0, {from: accounts[0]}).then(() => {
+              membersOrgan.addNorm("0x4788552D2296016Ad285463Dbf41C55f4e2d422d", "Premier membre", 0, 0, 0, {from: accounts[0]}).then(() => {
                 console.log("-------------------------------------")
                 console.log("Remove temporary Admins")
                 console.log("-------------------------------------")
@@ -99,6 +100,7 @@ module.exports = function(deployer, network, accounts) {
                     console.log("    \""+memberExclusion.address+"\",  // (Member Exclusion procedure)")
                     console.log("    \""+bureauReplacement.address+"\",  // (Bureau replacement procedure)")
                     console.log("    \""+constitutionnalReform.address+"\",  // (Constitutionnal reform procedure)")
+                    console.log("-------------------------------------")
 
               })
             })

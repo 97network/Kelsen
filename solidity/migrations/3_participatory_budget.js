@@ -71,7 +71,7 @@ module.exports = function(deployer, network, accounts) {
         console.log("-------------------------------------")
         console.log("Crediting admins")
         // Adding nomination by admins
-        memberRegistryOrgan.addAdmin("0x33ed205b8273aafd679e30b2f1b42d0dad839237", true, true, false, false, "Member nomination", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin("0x69968a3be850b588b28f25ff00f5c6198bbb94cf", true, true, false, false, "Member nomination", {from: accounts[0]}).then(() => {
 
         memberRegistryOrgan.addAdmin(memberManagement.address, true, true, false, false, "Member cooptation", {from: accounts[0]}).then(() => {
         memberRegistryOrgan.addAdmin(voteOnExpense.address, false, false, false, true, "Voting on expenses", {from: accounts[0]}).then(() => {
@@ -80,7 +80,7 @@ module.exports = function(deployer, network, accounts) {
         memberRegistryOrgan.addAdmin(accounts[0], true, true, false, false, "Temp admin", {from: accounts[0]}).then(() => {
           console.log("-------------------------------------")
           console.log("Crediting norms")
-          memberRegistryOrgan.addNorm(accounts[0], "Member 0", 1, 1, 1, {from: accounts[0]}).then(() => {
+          memberRegistryOrgan.addNorm("0x051C3f5788d868221C8636b08e86d80d143BeC2D", "97 - Initial member", 0, 0, 0, {from: accounts[0]}).then(() => {
 
             console.log("-------------------------------------")
             console.log("Removing temp admins")

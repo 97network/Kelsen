@@ -48,7 +48,7 @@ module.exports = function(deployer, network, accounts) {
     // Deploying 6 procedures: 
 
     // Voting time variables. These are short for demonstration purposes
-    voteDurationInSeconds = 3*24*60*60
+    voteDurationInSeconds = 3*60*60
     
     // Gestion des décisions des actionnaires
     deployer.deploy(deployVoteOnAdminsAndMastersProcedure, actionnairesOrgan.address, 0x0000, actionnairesOrgan.address, 50, voteDurationInSeconds, voteDurationInSeconds, 50, "Gestion des décisions", {from: accounts[0]}).then(() => {
