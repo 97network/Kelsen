@@ -46,7 +46,7 @@ module.exports = function(deployer, network, accounts) {
     // * Vote on expense
     // * Deposit procedure
     // Voting time variables. These are short for demonstration purposes
-    voteDurationInSeconds = 60
+    voteDurationInSeconds = 10
     
     // Deploy members list management
     deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
@@ -123,43 +123,41 @@ module.exports = function(deployer, network, accounts) {
                       console.log("-------------------------------------")
                       console.log("Final balance:")
                       console.log(web3.eth.getBalance(accounts[0]).toString(10))
-                      // console.log("Testing deposits")
-                      // console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
-                      
-                      //   depositFunds.sendTransaction({from: accounts[0], value: 1000000000}).then(() => {
-                      //   console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
+                      console.log("Testing deposits")                      
+                        depositFunds.sendTransaction({from: accounts[0], value: 1000000000}).then(() => {
+                        console.log("Initial balance on origin organ:")
+                        console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
+                        console.log("Testing Withdrawals")
+                        voteOnExpense.createProposition(depositFunds.address, 1000000, 1, 1, 1, "Test", {from: accounts[0]}).then(() => {
+                        voteOnExpense.vote(0, true, {from: accounts[0]}).then(() => {
+                        setTimeout(() => {
+                        voteOnExpense.endPropositionVote(0, {from: accounts[0]}).then(() => {
+                        console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
                         
-                      //   console.log("Testing Withdrawals")
-                      //   voteOnExpense.createProposition(accounts[1], 1000, 1, 1, 1, "Test", {from: accounts[0]}).then(() => {
-                      //   voteOnExpense.vote(0, true, {from: accounts[0]}).then(() => {
-                      //   setTimeout(() => {
-                      //   voteOnExpense.endPropositionVote(0, {from: accounts[0]}).then(() => {
-                      //   console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
+                        memberRegistryOrgan.getActiveNormNumber().then(normNumber => {
+                        console.log(normNumber)
                         
-                      //   memberRegistryOrgan.getActiveNormNumber().then(normNumber => {
-                      //   console.log(normNumber)
-                        
-                      //   voteOnExpense.getVotedPropositionResults(0).then(QueryResult => {
-                      //   console.log(QueryResult)
-                      //   voteOnExpense.getPropositionStatus(0).then(QueryResult => {
-                      //   console.log(QueryResult)
-                      //   voteOnExpense.getVotedPropositionStats(0).then(QueryResult => {
-                      //   console.log(QueryResult)
-                      //   console.log("promulgateProposition")
-                      //   voteOnExpense.promulgateProposition(0, true, {from: accounts[0]}).then(() => {
+                        voteOnExpense.getVotedPropositionResults(0).then(QueryResult => {
+                        console.log(QueryResult)
+                        voteOnExpense.getPropositionStatus(0).then(QueryResult => {
+                        console.log(QueryResult)
+                        voteOnExpense.getVotedPropositionStats(0).then(QueryResult => {
+                        console.log(QueryResult)
+                        console.log("promulgateProposition")
+                        voteOnExpense.promulgateProposition(0, true, {from: accounts[0]}).then(() => {
 
-                      //   console.log(web3.eth.getBalance(accounts[1]).toString(10))
+                        console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
 
-                      //   }) // Promulgation
-                      //   }) // Query election stats
-                      //   }) // Query Election results
-                      //   }) // Query status
-                      //   }) // Get Norm Number
-                      //   }) // End proposition
-                      //   }, (voteDurationInSeconds+1)*1000) // Timeout
-                      //   }) //Voting
-                      //   }) // Proposition creation transaction
-                      // }) // Deposit transaction
+                        }) // Promulgation
+                        }) // Query election stats
+                        }) // Query Election results
+                        }) // Query status
+                        }) // Get Norm Number
+                        }) // End proposition
+                        }, (voteDurationInSeconds+1)*1000) // Timeout
+                        }) //Voting
+                        }) // Proposition creation transaction
+                      }) // Deposit transaction
 
 
 

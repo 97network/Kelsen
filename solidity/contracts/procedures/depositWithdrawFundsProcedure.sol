@@ -49,17 +49,17 @@ contract depositWithdrawFundsProcedure is Procedure{
 
     function () public payable {
 
-        // Instanciating Organ
-        Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
+        
 
         // Checking if depositors are restricted
         if (authorizedDepositorsOrganContract != 0x0000) {
-
+            // Instanciating Organ
+            Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
             require(authorizedDepositorsOrgan.isNorm(msg.sender));
-            
+            delete authorizedDepositorsOrgan;
         }
 
-        delete authorizedDepositorsOrgan;
+        
 
         // Sending funds to organ
         defaultReceivingOrganContract.transfer(msg.value);
@@ -74,7 +74,7 @@ contract depositWithdrawFundsProcedure is Procedure{
 
     }
 
-        function depositToOrgan(address _targetOrgan) public payable {
+    function depositToOrgan(address _targetOrgan) public payable {
 
         // Instanciating Organ
         Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
