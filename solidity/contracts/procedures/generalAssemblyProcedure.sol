@@ -35,12 +35,13 @@ contract generalAssemblyProcedure is Procedure{
 
     // ######################
 
-    constructor(address payable presidentOrganContract, address payable propositionVotingProcedure, uint _timeToPropose, bytes32 _name) 
+    constructor(address payable presidentOrganContract, address payable propositionVotingProcedure, uint _normalAssemblyDelay, uint _timeToPropose, bytes32 _name) 
     public 
     {
     procedureInfo.initProcedure(8, _name, 2);
     linkedOrgans.initTwoRegisteredOrgans(presidentOrganContract, propositionVotingProcedure);
     timeToPropose = _timeToPropose;
+    normalAssemblyDelay = _normalAssemblyDelay;
     }
 
     function startAssembly()
