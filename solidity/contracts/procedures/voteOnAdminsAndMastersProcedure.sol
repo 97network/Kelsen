@@ -16,23 +16,24 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     // 6: Vote on masters and admins 
     // 7: Cooptation
 
-    using procedureLibrary for procedureLibrary.threeRegisteredOrgans;
+    using procedureLibrary for procedureLibrary.fourRegisteredOrgans;
     using propositionVotingLibrary for propositionVotingLibrary.Proposition;
     using propositionVotingLibrary for propositionVotingLibrary.VotingProcessInfo;
 
     // First stakeholder address is votersOrganContract
     // Second stakeholder address is membersWithVetoOrganContract
     // Third stakeholder address is finalPromulgatorsOrganContract
-    procedureLibrary.threeRegisteredOrgans public linkedOrgans;
+    // Fourth stakeholder address is who can create proposition
+    procedureLibrary.fourRegisteredOrgans public linkedOrgans;
     propositionVotingLibrary.VotingProcessInfo public votingProcedureInfo;
 
     // ######################
 
-    constructor(address payable _votersOrganContract, address payable _membersWithVetoOrganContract, address payable _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
+    constructor(address payable _votersOrganContract, address payable _membersWithVetoOrganContract, address payable _finalPromulgatorsOrganContract, address payable _propositionCreatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
-    procedureInfo.initProcedure(6, _name, 3);
-    linkedOrgans.initThreeRegisteredOrgans(_votersOrganContract, _membersWithVetoOrganContract, _finalPromulgatorsOrganContract);
+    procedureInfo.initProcedure(6, _name, 4);
+    linkedOrgans.initFourRegisteredOrgans(_votersOrganContract, _membersWithVetoOrganContract, _finalPromulgatorsOrganContract, _propositionCreatorsOrganContract);
     votingProcedureInfo.initElectionParameters(_quorumSize, _votingPeriodDuration, _promulgationPeriodDuration, _majoritySize);
     }
 
