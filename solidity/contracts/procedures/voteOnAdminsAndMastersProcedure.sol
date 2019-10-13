@@ -20,6 +20,9 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     // Organ in which the voters are registered
     address public votersOrganContract;
 
+    // Organ in which people who can propose new propositions are registered
+    address public propositionCreatorsOrganContract;
+
     // Organ in which the voters with veto power are registered
     address public membersWithVetoOrganContract;
 
@@ -119,9 +122,9 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) public returns (uint propositionNumber){
 
             // Check the proposition creator is able to make a proposition
-            Organ voterRegistryOrgan = Organ(votersOrganContract);
-            require(voterRegistryOrgan.isNorm(msg.sender));
-            delete voterRegistryOrgan;
+            Organ propositionCreatorsOrgan = Organ(propositionCreatorsOrganContract);
+            require(propositionCreatorsOrgan.isNorm(msg.sender));
+            delete propositionCreatorsOrgan;
 
             // Retrieving proposition details
             Proposition memory newProposition;
