@@ -1,0 +1,10 @@
+{
+  "name": "solidity",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "truffle": "^5.0.40",
+    "truffle-hdwallet-provider": "^1.0.17"
+  }
+}
