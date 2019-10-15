@@ -27,7 +27,7 @@ contract generalAssemblyProcedure is Procedure{
     // propositionVotingLibrary.VotingProcessInfo public votingProcedureInfo;
 
     // Specific procedure variables
-    bool isAssemblyOpenedForProposition;
+    bool public isAssemblyOpenedForProposition;
     uint public lastStartedAssembly;
     uint public normalAssemblyDelay;
     uint public timeToPropose;

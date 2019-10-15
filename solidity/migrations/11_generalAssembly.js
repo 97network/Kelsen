@@ -62,20 +62,20 @@ module.exports = (deployer, network, accounts) => {
 
         console.log("### Declaring procedures")
         const p2 = await _deployProcedurePromise(
-            deploySimpleNormNominationProcedure.new(directionGenerale.address, "Nomination du directeur général", { from }),
-            "Nomination du directeur général"
+            deploySimpleNormNominationProcedure.new(directionGenerale.address, "Nomination des directeurs.trices", { from }),
+            "Nomination des directeurs.trices"
         )
         const p3 = await _deployProcedurePromise(
-            deploySimpleNormNominationProcedure.new(respJuridique.address, "Nomination du responsable juridique", { from }),
-            "Nomination du responsable juridique"
+            deploySimpleNormNominationProcedure.new(respJuridique.address, "Gestion des documents juridiques", { from }),
+            "Gestion des documents juridiques"
         )
         const p4 = await _deployProcedurePromise(
-            deploySimpleNormNominationProcedure.new(respRH.address, "Nomination du reponsable RH", { from }),
-            "Nomination du reponsable RH"
+            deploySimpleNormNominationProcedure.new(respRH.address, "Édition du registre du personnel", { from }),
+            "Édition du registre du personnel"
         )
         const p5 = await _deployProcedurePromise(
-            deploySimpleNormNominationProcedure.new(respCompta.address, "Nomination du responsable comptabilité", { from }),
-            "Nomination du responsable comptabilité"
+            deploySimpleNormNominationProcedure.new(respCompta.address, "Édition des registres comptables", { from }),
+            "Édition des registres comptables"
         )
         const p1b = await _deployProcedurePromise(
             deployVoteOnAdminsAndMastersProcedure.new(associates.address, presidency.address, presidency.address, p0ProposerProcedure.address, 30, 1 * ONE_DAY, 0, 50, "Assemblée générale ordinaire", { from }),
