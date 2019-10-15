@@ -14,8 +14,10 @@ contract voteOnNormsProcedure is Procedure{
     // 5: Vote on Norms 
     // 6: Vote on masters and admins 
     // 7: Cooptation
+    // 8: Vote on an expense
+    // 9: Deposit/Withdraw funds on an organ
+    // 10: General Assembly
     int public procedureTypeNumber = 5;
-
 
     // ############## Variable to set up when declaring the procedure
 

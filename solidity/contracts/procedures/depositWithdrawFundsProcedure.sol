@@ -16,6 +16,7 @@ contract depositWithdrawFundsProcedure is Procedure{
     // 7: Cooptation
     // 8: Vote on an expense
     // 9: Deposit/Withdraw funds on an organ
+    // 10: General Assembly
     int public procedureTypeNumber = 9;
 
     // // Storage for procedure name

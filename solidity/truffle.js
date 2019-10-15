@@ -20,21 +20,18 @@ module.exports = {
       host: "localhost",
       port: 8545,
       network_id: 4,
-	   gasPrice: 11000000000
+      gasPrice: 11000000000
     },
     rinkebyinfura: {
-      provider: new HDWalletProvider(mnemonic2, "https://rinkeby.infura.io/v3/"+infura_apikey),
+      provider: () => new HDWalletProvider(mnemonic2, "https://rinkeby.infura.io/v3/"+infura_apikey),
       network_id: 4,
       gasPrice: 2000000000,
       skipDryRun: true
     }
   },
   compilers: {
-    solc: 
-      {
+    solc: {
       version: "0.4.11"
-      }
     }
-
-
+  }
 }
