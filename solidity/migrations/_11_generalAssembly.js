@@ -78,12 +78,12 @@ module.exports = (deployer, network, accounts) => {
             "Édition des registres comptables"
         )
         const p1b = await _deployProcedurePromise(
-            deployVoteOnAdminsAndMastersProcedure.new(associates.address, presidency.address, presidency.address, p0ProposerProcedure.address, 30, 1 * ONE_DAY, 0, 50, "Assemblée générale ordinaire", { from }),
-            "Assemblée générale ordinaire"
+            deployVoteOnAdminsAndMastersProcedure.new(associates.address, presidency.address, presidency.address, p0ProposerProcedure.address, 30, 1 * ONE_DAY, 0, 50, "Assemblée générale", { from }),
+            "Assemblée générale"
         )
         const p1a = await _deployProcedurePromise(
-            generalAssemblyProcedure.new(presidency.address, p1b.address, 365 * ONE_DAY, 1 * ONE_DAY, "Assemblée générale extraordinaire", { from }),
-            "Assemblée générale extraordinaire"
+            generalAssemblyProcedure.new(presidency.address, p1b.address, 365 * ONE_DAY, 1 * ONE_DAY, "Gestion d'assemblées générales", { from }),
+            "Gestion d'assemblées générales"
         )
 
         console.log("### Setting organ parameters.")

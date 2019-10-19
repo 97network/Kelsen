@@ -32,9 +32,11 @@ contract simpleNormNominationProcedure is Procedure{
     function addNorm(address _targetOrgan, address _normAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
 
         // Checking if caller is an admin
-        Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
-        require(authorizedNominatorsInstance.isNorm(msg.sender));
-        delete authorizedNominatorsInstance;
+        if (authorizedNominatersOrgan != 0x0000) {
+            Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
+            require(authorizedNominatorsInstance.isNorm(msg.sender));
+            delete authorizedNominatorsInstance;
+        }
 
         // Checking that the nomination procedure is an admin to the target organ
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -53,9 +55,11 @@ contract simpleNormNominationProcedure is Procedure{
     function remNorm(address _targetOrgan, uint _normNumber) public {
 
         // Checking if caller is an admin
-        Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
-        require(authorizedNominatorsInstance.isNorm(msg.sender));
-        delete authorizedNominatorsInstance;
+        if (authorizedNominatersOrgan != 0x0000) {
+            Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
+            require(authorizedNominatorsInstance.isNorm(msg.sender));
+            delete authorizedNominatorsInstance;
+        }
 
         // Checking that the nomination procedure is an admin to the target organ
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -74,9 +78,11 @@ contract simpleNormNominationProcedure is Procedure{
     function replaceNorm(address _targetOrgan, uint _oldNormNumber, address _newNormAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
 
         // Checking if caller is an admin
-        Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
-        require(authorizedNominatorsInstance.isNorm(msg.sender));
-        delete authorizedNominatorsInstance;
+        if (authorizedNominatersOrgan != 0x0000) {
+            Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
+            require(authorizedNominatorsInstance.isNorm(msg.sender));
+            delete authorizedNominatorsInstance;
+        }
 
         // Checking that the nomination procedure is an admin to the target organ
         Organ targetOrganInstance = Organ(_targetOrgan);
