@@ -3,8 +3,8 @@ var deployOrgan = artifacts.require('deployOrgan')
 var deploySimpleNormNominationProcedure = artifacts.require("deploySimpleNormNominationProcedure")
 var deploySimpleAdminsAndMasterNominationProcedure = artifacts.require("deploySimpleAdminsAndMasterNominationProcedure")
 
-async function _deployOrgan(name, from) {
-    return deployOrgan.new(name, { from })
+async function _deployOrgan(name) {
+    return deployOrgan.new(name)
     .then(data => {
         console.log("Deployed organ", name, data.address)
         return data
@@ -21,89 +21,98 @@ async function _deployProcedurePromise(promise, name = "") {
     .catch(console.error)
 }
 
-async function _removeMaster(organ, address, from) {
-    return organ.remMaster(address, { from })
-    .then(_ => console.log("Removed master", organ.address, address))
-}
-
-module.exports = (deployer, network, accounts) => {
+module.exports = (deployer, _network, accounts) => {
     deployer.then(async () => {
-        const from = accounts[0]
-
-        console.log("### Deploying libraries")
+        console.log("\n### Deploying libraries")
         await deployer.deploy(Migrations)
 
-        console.log("### Declaring organs")
-        const directionGenerale = await _deployOrgan("Direction générale", from)
-        const registreDuPersonnel = await _deployOrgan("Registre du personnel", from)
-        const registreJuridique = await _deployOrgan("Documents juridiques", from)
-        const registresComptables = await _deployOrgan("Registres comptables", from)
+        console.log("\n### Deploying organs")
+        const [
+            directionGenerale,
+            registreDuPersonnel,
+            registreJuridique,
+            registresComptables
+        ] = await Promise.all([
+            _deployOrgan("Direction générale"),
+            _deployOrgan("Registre du personnel"),
+            _deployOrgan("Documents juridiques"),
+            _deployOrgan("Registres comptables")
+        ])
 
-        console.log("### Declaring procedures")
-        const nominateDirector = await _deployProcedurePromise(
-          deploySimpleNormNominationProcedure.new(directionGenerale.address, "Nomination du directeur général", { from }),
-          "Nomination du directeur général"
-        )
-        const updateRegistry = await _deployProcedurePromise(
-          deploySimpleNormNominationProcedure.new(directionGenerale.address, "Édition des registres obligatoires", { from }),
-          "Édition des registres obligatoires"
-        )
-        // P0 : Administer system
-        const administerSystem = await _deployProcedurePromise(
-          deploySimpleAdminsAndMasterNominationProcedure.new(directionGenerale.address, "Modification du système", { from }),
-          "Modification du système"
-        )
+        console.log("\n### Deploying procedures")
+        const [
+            nominateDirector,
+            updateRegistry,
+            administerSystem
+        ] = await Promise.all([
+            _deployProcedurePromise(
+                deploySimpleNormNominationProcedure.new(directionGenerale.address, "Nomination du directeur général"),
+                "Nomination du directeur général"
+            ),
+            _deployProcedurePromise(
+                deploySimpleNormNominationProcedure.new(directionGenerale.address, "Édition des registres obligatoires"),
+                "Édition des registres obligatoires"
+              ),
+            _deployProcedurePromise(
+                deploySimpleAdminsAndMasterNominationProcedure.new(directionGenerale.address, "Modification du système"),
+                "Modification du système"
+            )
+        ])
 
-        console.log("### Setting organ parameters.")
+        console.log("\n### Setting organ parameters.")
+        await Promise.all([
+            // Adding Masters
+            directionGenerale.addMaster(administerSystem.address, true, true, "Administration de la Direction Générale")
+            .then(_ => console.log("Added Master", directionGenerale.address, administerSystem.address)),
+            registreDuPersonnel.addMaster(administerSystem.address, true, true, "Administration du Registre du Personnel")
+            .then(_ => console.log("Added Master", registreDuPersonnel.address, administerSystem.address)),
+            registreJuridique.addMaster(administerSystem.address, true, true, "Administration du Registre Juridique")
+            .then(_ => console.log("Added Master", registreJuridique.address, administerSystem.address)),
+            registresComptables.addMaster(administerSystem.address, true, true, "Administration du Registre Comptable")
+            .then(_ => console.log("Added Master", registresComptables.address, administerSystem.address)),
+            // Adding Admins
+            directionGenerale.addAdmin(nominateDirector.address, true, true, false, false, "Nomination d'un Directeur Général")
+            .then(_ => console.log("Added Admin", directionGenerale.address, nominateDirector.address)),
+            registreJuridique.addAdmin(updateRegistry.address, true, true, false, false, "Édition d'un Document Juridique")
+            .then(_ => console.log("Added Admin", registreJuridique.address, updateRegistry.address)),
+            registreDuPersonnel.addAdmin(updateRegistry.address, true, true, false, false, "Gestion du Personnel")
+            .then(_ => console.log("Added Admin", registreDuPersonnel.address, updateRegistry.address)),
+            registresComptables.addAdmin(updateRegistry.address, true, true, false, false, "Édition d'un Registre Comptable")
+            .then(_ => console.log("Added Admin", registresComptables.address, updateRegistry.address)),
+            // Adding Temp Admins
+            directionGenerale.addAdmin(accounts[0], true, true, false, false, "Administrator")
+            .then(_ => console.log("Added Temp Administrator", directionGenerale.address, accounts[0]))
+        ])
 
-        console.log("### Adding masters")
-        await directionGenerale.addMaster(administerSystem.address, true, true, "Modification du système", { from })
-        .then(_ => console.log("Added Master", directionGenerale.address, administerSystem.address))
-        await registreDuPersonnel.addMaster(administerSystem.address, true, true, "Modification du système", { from })
-        .then(_ => console.log("Added Master", registreDuPersonnel.address, administerSystem.address))
-        await registreJuridique.addMaster(administerSystem.address, true, true, "Modification du système", { from })
-        .then(_ => console.log("Added Master", registreJuridique.address, administerSystem.address))
-        await registresComptables.addMaster(administerSystem.address, true, true, "Modification du système", { from })
-        .then(_ => console.log("Added Master", registresComptables.address, administerSystem.address))
-        
-        console.log("### Adding admins")
-        await directionGenerale.addAdmin(nominateDirector.address, true, true, false, false, "Nomination du directeur général", { from })
-        .then(_ => console.log("Added Admin", directionGenerale.address, nominateDirector.address))
-        await registreJuridique.addAdmin(updateRegistry.address, true, true, false, false, "Édition des registres obligatoires", { from })
-        .then(_ => console.log("Added Admin", registreJuridique.address, updateRegistry.address))
-        await registreDuPersonnel.addAdmin(updateRegistry.address, true, true, false, false, "Édition des registres obligatoires", { from })
-        .then(_ => console.log("Added Admin", registreDuPersonnel.address, updateRegistry.address))
-        await registresComptables.addAdmin(updateRegistry.address, true, true, false, false, "Édition des registres obligatoires", { from })
-        .then(_ => console.log("Added Admin", registresComptables.address, updateRegistry.address))
+        console.log("\n### Adding entries");
+        await directionGenerale.addNorm(accounts[0], "Directeur Général", "0x", 0, 0)
+        .then(_ => console.log("Added entry", directionGenerale.address, accounts[0]))
 
-        console.log("### Adding temp admins")
-        await directionGenerale.addAdmin(from, true, true, false, false, "Account 0", { from })
-        .then(_ => console.log("Added Temp Admin Account 0", directionGenerale.address, from))
-        
-        console.log("### Adding entries");
-        await directionGenerale.addNorm(from, "Account 0", "0x", 0, 0, { from })
-        .then(_ => console.log("Added entry", directionGenerale.address, from))
+        console.log("\n### Cleaning installation")
+        await Promise.all([
+            // Removing Temp Admins
+            directionGenerale.remAdmin(accounts[0])
+            .then(_ => console.log("Removed temp admin", directionGenerale.address, accounts[0])),
+            // Removing Temp Masters
+            directionGenerale.remMaster(accounts[0])
+            .then(_ => console.log("Removed master", directionGenerale.address, accounts[0])),
+            registreDuPersonnel.remMaster(accounts[0])
+            .then(_ => console.log("Removed master", registreDuPersonnel.address, accounts[0])),
+            registreJuridique.remMaster(accounts[0])
+            .then(_ => console.log("Removed master", registreJuridique.address, accounts[0])),
+            registresComptables.remMaster(accounts[0])
+            .then(_ => console.log("Removed master", registresComptables.address, accounts[0])),
+        ])
 
-        console.log("### Cleaning installation")
-        await directionGenerale.remAdmin(from, { from })
-        .then(_ => console.log("Removed temp admin", directionGenerale.address, from))
-
-        console.log("### Removing temp masters")
-        await _removeMaster(directionGenerale, from, from)
-        await _removeMaster(registreDuPersonnel, from, from)
-        await _removeMaster(registreJuridique, from, from)
-        await _removeMaster(registresComptables, from, from)
-
-        console.log("##########################")
-        console.log("### Migration finished ###")
+        console.log("\n##########################\n### Success!\n\n")
         console.log("[")
-        console.log("  \""+directionGenerale.address+"\",  // [Organ] Direction générale")
-        console.log("  \""+registreDuPersonnel.address+"\",  // [Organ] Registre du personnel")
-        console.log("  \""+registreJuridique.address+"\",  // [Organ] Documents juridiques")
-        console.log("  \""+registresComptables.address+"\",  // [Organ] Registres comptables")
-        console.log("  \""+administerSystem.address+"\",  // [Procedure] p0 Modification du système")
-        console.log("  \""+nominateDirector.address+"\",  // [Procedure] p1 Nomination du directeur général")
-        console.log("  \""+updateRegistry.address+"\",  // [Procedure] p2 Édition des registres obligatoires")
+        console.log("   \""+directionGenerale.address+"\",    // [Organ] Direction générale")
+        console.log("   \""+registreDuPersonnel.address+"\",    // [Organ] Registre du personnel")
+        console.log("   \""+registreJuridique.address+"\",    // [Organ] Documents juridiques")
+        console.log("   \""+registresComptables.address+"\",    // [Organ] Registres comptables")
+        console.log("   \""+administerSystem.address+"\",    // [Procedure] p0 Modification du système")
+        console.log("   \""+nominateDirector.address+"\",    // [Procedure] p1 Nomination du directeur général")
+        console.log("   \""+updateRegistry.address+"\",    // [Procedure] p2 Édition des registres obligatoires")
         console.log("]")
     })
 }
